@@ -2,6 +2,7 @@ namespace DeogenFounder.Persistence.Entities;
 
 public class Chat : BaseEntity
 {
-    public string Name { get; set; } = string.Empty;
+    public string SessionId { get; set; } = string.Empty;
     public List<AgentChat> AgentChats { get; set; } = [];
+    public List<Message> Messages { get; set; } = [];
 }

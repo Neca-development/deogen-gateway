@@ -15,7 +15,10 @@ public static class DbInitializer
                 await ctx.Agents.AddAsync(new Agent
                 {
                     Name = item.Name,
+                    Type = item.Type,
                     Prompt = item.Prompt,
+                    ApiUrl = item.ApiUrl,
+                    ApiKey = item.ApiKey
                 });
             }
         }

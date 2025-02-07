@@ -3,6 +3,7 @@ using System;
 using DeogenFounder.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeogenFounder.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    partial class ContextDbModelSnapshot : ModelSnapshot
+    [Migration("20250206152755_AddToHumanField")]
+    partial class AddToHumanField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,22 +125,17 @@ namespace DeogenFounder.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("FromId")
+                    b.Property<int>("FromId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("ItWasSent")
+                    b.Property<bool>("ToHuman")
                         .HasColumnType("boolean");
-
-                    b.Property<int?>("ToId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
 
                     b.HasIndex("FromId");
-
-                    b.HasIndex("ToId");
 
                     b.ToTable("Messages");
                 });
@@ -170,29 +168,21 @@ namespace DeogenFounder.Migrations
                         .IsRequired();
 
                     b.HasOne("DeogenFounder.Persistence.Entities.Agent", "From")
-                        .WithMany("FromMessages")
+                        .WithMany("Messages")
                         .HasForeignKey("FromId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DeogenFounder.Persistence.Entities.Agent", "To")
-                        .WithMany("ToMessages")
-                        .HasForeignKey("ToId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chat");
 
                     b.Navigation("From");
-
-                    b.Navigation("To");
                 });
 
             modelBuilder.Entity("DeogenFounder.Persistence.Entities.Agent", b =>
                 {
                     b.Navigation("AgentChats");
 
-                    b.Navigation("FromMessages");
-
-                    b.Navigation("ToMessages");
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("DeogenFounder.Persistence.Entities.Chat", b =>

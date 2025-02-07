@@ -3,6 +3,7 @@ using System;
 using DeogenFounder.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeogenFounder.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    partial class ContextDbModelSnapshot : ModelSnapshot
+    [Migration("20250206095040_AddApiUrlApiKeyToAgent")]
+    partial class AddApiUrlApiKeyToAgent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,51 +98,13 @@ namespace DeogenFounder.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("SessionId")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("DeogenFounder.Persistence.Entities.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("FromId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("ItWasSent")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("ToId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("FromId");
-
-                    b.HasIndex("ToId");
-
-                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DeogenFounder.Persistence.Entities.AgentChat", b =>
@@ -161,45 +126,14 @@ namespace DeogenFounder.Migrations
                     b.Navigation("Chat");
                 });
 
-            modelBuilder.Entity("DeogenFounder.Persistence.Entities.Message", b =>
-                {
-                    b.HasOne("DeogenFounder.Persistence.Entities.Chat", "Chat")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DeogenFounder.Persistence.Entities.Agent", "From")
-                        .WithMany("FromMessages")
-                        .HasForeignKey("FromId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DeogenFounder.Persistence.Entities.Agent", "To")
-                        .WithMany("ToMessages")
-                        .HasForeignKey("ToId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Chat");
-
-                    b.Navigation("From");
-
-                    b.Navigation("To");
-                });
-
             modelBuilder.Entity("DeogenFounder.Persistence.Entities.Agent", b =>
                 {
                     b.Navigation("AgentChats");
-
-                    b.Navigation("FromMessages");
-
-                    b.Navigation("ToMessages");
                 });
 
             modelBuilder.Entity("DeogenFounder.Persistence.Entities.Chat", b =>
                 {
                     b.Navigation("AgentChats");
-
-                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
